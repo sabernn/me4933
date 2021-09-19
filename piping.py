@@ -2,6 +2,7 @@
 from math import *
 
 
+
 def calc_thickness(design_pressure, outer_diameter, allowable_stress, E, W, Y, corrosion_allowance):
     P = design_pressure
     D = outer_diameter
