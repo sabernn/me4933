@@ -1,47 +1,8 @@
 import matplotlib.pyplot as plt
 import numpy as np
+from classes import *
 
 
-class Material:
-    def __init__(self, name, standard):
-        self.name = name
-        self.standard = standard
-        self.pp = None
-        self.product_form = None
-        self.stress_yield = None
-        self.temperature_yield = None
-        
-
-    def setYieldStress(self,stress_yield,temperature_yield, plot=True):
-        if stress_yield.shape != temperature_yield.shape:
-            raise ValueError("Yield and temperature vectors not in the same size!")
-            return None
-        self.stress_yield = stress_yield
-        self.temperature_yield = temperature_yield
-        if plot:
-            if self.stress_yield == "":
-                raise ValueError("Noting to plot!")
-            plt.plot(self.temperature_yield, self.stress_yield)
-            plt.plot(self.temperature_yield, self.stress_yield, 'o')
-            plt.xlabel("Temperature (F)")
-            plt.ylabel("Yield stress (ksi)")
-            plt.title(f"Yield stress versus Temperature for Material {self.name}")
-            plt.show()
-        return stress_yield, temperature_yield
-
-
-    def plotYieldStresses(self, material2= None):
-        if self.stress_yield.shape[0] == 0 or material2.stress_yield.shape[0] == 0:
-            raise ValueError("At least one material does not have enough data.")
-        plt.plot(self.temperature_yield, self.stress_yield)
-        plt.plot(material2.temperature_yield, material2.stress_yield)
-        plt.plot(self.temperature_yield, self.stress_yield, 'o')
-        plt.plot(material2.temperature_yield, material2.stress_yield, 'd')
-        plt.legend([self.name, material2.name])
-        plt.xlabel("Temperature (F)")
-        plt.ylabel("Yield stress (psi)")
-        plt.title(f"Yield stress versus Temperature for Materials {self.name} and {material2.name}")
-        plt.show()
     
 
 def calculate_tP(joint_efficiency, internal_pressure, radius, allowable_stress,type="cylinder",is_outer = False):
