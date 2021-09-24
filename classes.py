@@ -1,7 +1,7 @@
 from abc import ABC, abstractmethod
 import matplotlib.pyplot as plt
 import numpy as np
-import Standards.ASME as ASME2017
+import Standards.ASME as ASME
 
 class DimensionBase(ABC):
     @abstractmethod
@@ -89,7 +89,7 @@ class PressureVessel(ComponentBase):
         R = self.inner_radius
         S = self.material.stress_yield[0]
 
-        return ASME2017.calculate_tP(E,P,R,S)
+        return ASME.calculate_tP(E,P,R,S)
 
 
 if __name__ == "__main__":
