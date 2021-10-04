@@ -61,6 +61,7 @@ class ComponentBase(ABC):
         super().__init__()
         self.name = name
         self.material = material
+        
 
     def design(self):
         pass
@@ -68,7 +69,18 @@ class ComponentBase(ABC):
     def exportCAD(self):
         pass
 
+class AssemblyBase(ABC):
+    @abstractmethod
+    def __init__(self,name) -> None:
+        super().__init__()
+        self.name = name
+        self.ComponentList = None
 
+    def design(self):
+        pass
+
+    def exportCAD(self):
+        pass
 
 class PressureVessel(ComponentBase):
     def __init__(self, name, material: Material) -> None:
@@ -91,15 +103,93 @@ class PressureVessel(ComponentBase):
 
         return ASME.calculate_tP(E,P,R,S)
 
+class HeatExchanger(AssemblyBase):
+    def __init__(self, name, material: Material, TEMAtype) -> None:
+        super().__init__(name, material)
+        self.TEMAtype = TEMAtype
+        self.Datasheet = None
+
+class Pipe(ComponentBase):
+    def __init__(self, name, material: Material, nominal_diameter) -> None:
+        super().__init__(name, material)
+        self.nominal_diameter = nominal_diameter
+        self.outside_diameter = None
+        self.length = None
+        self.alpha = None
+        self.E = None
+        self.W = None
+        self.Y = None
+        self.corrosion_allowance = None
+
+
+
+    def calculate_thickness(self,design_pressure):
+        P = design_pressure
+        D = self.outside_diameter
+        S = self.material.stress_yield[0]
+
+        t = P * D / 2 / (S * self.E * self.W + P * self.Y)
+        tm = t + self.corrosion_allowance + t*0.125
+        return tm
+
+    def thermal_expansion(self):
+        return self.alpha * self.length
+        
+
+    def 
+
+class Flange(ComponentBase):
+    def __init__(self, name, material: Material, nominal_pipe_size, class_lb, type="RFWN") -> None:
+        super().__init__(name, material)
+        self.nominal_pipe_size = nominal_pipe_size
+        self.class_lb = class_lb
+        self.type = type
+        self.is_dimension=False
+        self.__flange_standard()
+        
+
+    def __flange_standard(self):
+        if self.type=="RFWN":
+            if self.nominal_pipe_size==8:
+                self.outside_diameter = 13.5 #inch
+                self.thickness_min = 1.125 #inch
+                self.od_raised_face = 10.625 #inch
+                self.d_hub_base = 9.6875 #inch
+                self.bore = 7.98 #inch
+                self.l_thru_hub = 4.0 #inch
+                self.d_bevel_hub = 8.63 #inch
+            else:
+                print("Not implemented yet...")
+                return None
+        else:
+            print("Not implemented yet...")
+            return None
+
+        self.is_dimension=True
+        return self.outside_diameter,self.thickness_min,self.od_raised_face,self.d_hub_base,self.bore,self.l_thru_hub,self.d_bevel_hub
 
 if __name__ == "__main__":
     material=Material("SA-516-70N","ASME")
     material.stress_yield = np.array([20000])
     material.temperature_yield = np.array([50])
 
-    vessel = PressureVessel("8PV-1752",material)
+    # vessel = PressureVessel("8PV-1752",material)
 
-    print(dir(vessel))
+    flange = Flange("saber",material,8,150,"RFWN")
+
+    O = flange.outside_diameter
+    C = flange.thickness_min
+    R = flange.od_raised_face
+
+
+
+    # print(dir(flange))
+    print(O)
+
+    
+    
+
+    # print(dir(vessel))
 
 
 

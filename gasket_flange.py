@@ -1,6 +1,9 @@
 import matplotlib.pyplot as plt
 import numpy as np
+from classes import Material, Flange
 
+
+    
 
 def flange_standard(nominal_pipe_size,flange_type):
     if flange_type=="RFWN":
@@ -22,5 +25,9 @@ def flange_standard(nominal_pipe_size,flange_type):
     return outside_diameter,thickness_min,od_raised_face,d_hub_base,bore,l_thru_hub,d_bevel_hub
 
 if __name__=="__main__":
-    flange = flange_standard(8,"RFWN")
-    print(flange)
+
+    material_flange=Material("SA-105","ASME")
+    material_bolt = Material("SA-193-G7","ASME")
+    material_flange.stress_yield = np.array([20000])
+    material_flange.temperature_yield = np.array([50])
+    flange = Flange("saber",material_flange,8,150,"RFWN")
